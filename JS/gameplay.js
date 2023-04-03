@@ -179,20 +179,31 @@ GamePlayManager={
             this.increaseScore();
             this.increaseBody();
         }
+
+        if(this.snake[0].x<0||this.snake[0].x>this.game.width){
+                this.reset();
+        }
+
+        if(this.snake[0].y<0||this.snake[0].y>this.game.height){
+            this.reset();
+        }
         
         for(let j=this.snake.length-1;j>15;j--){
                 this.bodyRect=this.getBoundsBlock(this.snake[j]);
                 if(this.isRectanglesOverlapping(this.snakeRect,this.bodyRect)){
-                    this.lives--;
-                   
-                    this.livesText.text=this.lives;
-                    this.i=0;
-                    this.create();
+                  this.reset();  
                   
                 }
         }          
         
-    }, 
+    },
+    
+    reset:function(){
+        this.lives--;
+        this.livesText.text=this.lives;
+        this.i=0;
+        this.create();
+    },
 
     increaseBody:function(){
         this.i++;
