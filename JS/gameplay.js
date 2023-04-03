@@ -4,6 +4,7 @@ var pointerX=0;
 var pointerY=0;
 var distX=0;
 var distY=0;
+var blocks=10;
 
 GamePlayManager={
 
@@ -27,7 +28,9 @@ GamePlayManager={
        game.load.image("fondo","./SRC/IMAGES/fondo.png");
        game.load.image("snake","./SRC/IMAGES/snakeHead.png");
        game.load.image("bola","./SRC/IMAGES/snakeBody.png");
+       game.load.image("block","./SRC/IMAGES/Block.png");
        game.load.audio("audio","./SRC/SOUNDS/Audio_3_.mp3");
+       
     },
 
     increaseScore:function(){
@@ -79,7 +82,7 @@ GamePlayManager={
     },
 
     ballXY: function(ball){
-        ball.x=game.rnd.integerInRange(10,640);
+        ball.x=game.rnd.integerInRange(10,1136);
         ball.y=game.rnd.integerInRange(10,640);
        
         
@@ -103,7 +106,8 @@ GamePlayManager={
         this.ball.anchor.setTo(0.5,0.5);
         this.ballXY(this.ball);
 
-        
+        this.blocks=[];
+        this.createBlocks();
 
         game.input.onDown.add(this.onTap,this);
 
@@ -126,6 +130,31 @@ GamePlayManager={
         }
        
     },
+
+    createBlocks:function(){
+        
+        for(let i=0;i<blocks;i++){
+            this.blocks[i]=game.add.sprite(0,0,"block");
+            this.blocks[i].anchor.setTo(0.5,0.5);
+            this.ballXY(this.blocks[i]);
+
+            var blockRect=this.getBoundsBlock(this.blocks[i]);
+            var snakeRect=this.getBoundsBlock(this.snake[0]);
+            var ballRect=this.getBoundsBlock(this.ball);
+
+            if(this.isRectanglesOverlapping(snakeRect,blockRect)){
+                this.ballXY(this.blocks[i]);
+               
+            }
+
+            if(this.isRectanglesOverlapping(ballRect,blockRect)){
+                this.ballXY(this.blocks[i]);
+               
+            }
+
+        }
+    },
+
     getBoundsBlock: function(currentDiamond){
         //Devuelve un rectangulo con las mismas dimenciones que los sprites
         return new Phaser.Rectangle(currentDiamond.left,currentDiamond.top,currentDiamond.width,currentDiamond.height);
@@ -188,13 +217,21 @@ GamePlayManager={
             this.reset();
         }
         
-        for(let j=this.snake.length-1;j>15;j--){
+       /*  for(let j=this.snake.length-1;j>15;j--){
                 this.bodyRect=this.getBoundsBlock(this.snake[j]);
                 if(this.isRectanglesOverlapping(this.snakeRect,this.bodyRect)){
                   this.reset();  
                   
                 }
-        }          
+        }         */  
+
+        for(let j=0;j<this.blocks.length;j++){
+            this.blockRect=this.getBoundsBlock(this.blocks[j]);
+            if(this.isRectanglesOverlapping(this.snakeRect,this.blockRect)){
+              this.reset();  
+              
+            }
+    } 
         
     },
     
@@ -207,8 +244,8 @@ GamePlayManager={
 
     increaseBody:function(){
         this.i++;
-        //this.snake[this.i]=game.add.sprite(this.snake[this.i-1].x-this.snake[this.i-1].width/2,this.snake[this.i-1].y-this.snake[this.i-1].height/2,"bola");
-        this.snake[this.i]=game.add.sprite(this.snake[this.i-1].x-distX*0.02,this.snake[this.i-1].y-distY*0.02,"bola");
+        this.snake[this.i]=game.add.sprite(this.snake[this.i-1].x-this.snake[this.i-1].width,this.snake[this.i-1].y-this.snake[this.i-1].height,"bola");
+        //this.snake[this.i]=game.add.sprite(this.snake[this.i-1].x-distX*0.02,this.snake[this.i-1].y-distY*0.02,"bola");
         this.snake[this.i].anchor.setTo(0.5,0.5);
        /*  this.snake[this.i].x=this.snake[this.i-1].x;
         this.snake[this.i].y=this.snake[this.i-1].y; */
@@ -222,6 +259,7 @@ GamePlayManager={
 
               if(this.lives<=0){
                 this.gameOver=true;
+                this.activate=false;
                 this.showFinalMessage("GAME OVER");
               }
                 
