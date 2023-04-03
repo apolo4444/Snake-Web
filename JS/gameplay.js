@@ -211,7 +211,6 @@ GamePlayManager={
 
               if(this.lives<=0){
                 this.gameOver=true;
-                this.activate=false;
                 this.showFinalMessage("GAME OVER");
               }
                 
