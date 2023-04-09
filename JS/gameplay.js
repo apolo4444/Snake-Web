@@ -1,10 +1,11 @@
 var activate=false;
 var gameOver=false;
+var music=false;
 var pointerX=0;
 var pointerY=0;
 var distX=0;
 var distY=0;
-var blocks=10;
+var blocks=6;
 
 GamePlayManager={
 
@@ -20,6 +21,7 @@ GamePlayManager={
         this.snakeY=this.speed*0.03;
         this.i=0;
         this.currentScore=0;
+        music=true;
 
 
     },
@@ -124,11 +126,11 @@ GamePlayManager={
         this.livesText=game.add.text(20,20,this.lives, style);
         this.livesText.anchor.setTo(0.5);
 
-        if(activate!=false){
+        if(music!=false){
             this.loop=game.sound.add("audio");
             this.loop.play();
         }
-       
+       music=false;
     },
 
     createBlocks:function(){
